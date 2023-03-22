@@ -1,11 +1,40 @@
 class Tooltip {}
 
-class ProjectItem {}
+class ProjectItem {
+  constructor(id) {
+    this.id = id;
+    this.connectMoreInfoButton();
+    this.connectSwitchButton();
+  }
+  connectMoreInfoButton() {}
+
+  connectSwitchButton() {
+    const projectItemElement = document.getElementById(this.id);
+    const switchBtn = projectItemElement.querySelector("button:last-of-type");
+    switchBtn.addEventListener("click");
+  }
+}
 
 class ProjectList {
+  projects = [];
+
   constructor(type) {
     const prjItems = document.querySelectorAll(`#${type}-projects li`);
-    console.log(prjItems);
+    for (const prjItem of prjItems) {
+      this.projects.push(new ProjectItem(prjItem.id));
+    }
+    console.log(this.projects);
+  }
+
+  addProject() {}
+
+  swichProject(projectId) {
+    // const projectIndex = this.projects.findIndex((p) => p.id === projectId);
+    // this.projects.splice(projectIndex, 1);
+
+    // this.addProject(); 는 같은 인스턴스에서 호출하기 때문에 작동 X
+
+    this.projects = this.projects.filter((p) => p.id !== projectId);
   }
 }
 
