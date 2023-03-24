@@ -1,3 +1,5 @@
+// 객체 지향 접근 방법을 사용, 클래스로 작업
+
 // 요소를 교체하는 함수
 class DOMHelper {
   static clearEventListeners(element) {
@@ -13,9 +15,33 @@ class DOMHelper {
   }
 }
 
-class Tooltip {
+class Component {
+  constructor(hostElementId, insertBefore = false) {
+    if (hostElementId) {
+      this.hostElement = document.getElementById(hostElementId);
+    } else {
+      this.hostElement = document.body;
+    }
+    this.insertBefore = insertBefore;
+  }
+
+  detach() {
+    if (this.element) this.element.remove();
+  }
+
+  attach() {
+    this.hostElement.insertAdjacentElement(
+      this.insertBefore ? "afterbegin" : "beforeend",
+      this.element
+    );
+  }
+}
+
+class Tooltip extends Component {
   constructor(closeNotifierFunction) {
+    super();
     this.closeNotifier = closeNotifierFunction;
+    this.create();
   }
 
   closeTooltip = () => {
@@ -23,17 +49,12 @@ class Tooltip {
     this.closeNotifier();
   };
 
-  detach() {
-    this.element.remove();
-  }
-
-  attach() {
+  create() {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
     tooltipElement.textContent = "DUMMY";
     tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;
-    document.body.append(tooltipElement);
   }
 }
 
