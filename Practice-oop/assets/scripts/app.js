@@ -38,8 +38,8 @@ class Component {
 }
 
 class Tooltip extends Component {
-  constructor(closeNotifierFunction, text) {
-    super();
+  constructor(closeNotifierFunction, text, hostElementId) {
+    super(hostElementId);
     this.closeNotifier = closeNotifierFunction;
     this.text = text;
     this.create();
@@ -54,6 +54,19 @@ class Tooltip extends Component {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
     tooltipElement.textContent = this.text;
+
+    const hostElPostLeft = this.hostElement.offsetLeft;
+    const hostElPostTop = this.hostElement.offsetTop;
+    const hostElPostHeight = this.hostElement.offsetHeight;
+    const perentElementScrolling = this.hostElement.parentElement.scrollTop;
+
+    const x = hostElPostLeft + 20;
+    const y = hostElPostTop + hostElPostHeight - perentElementScrolling - 10;
+
+    tooltipElement.style.position = "absolute"; // 화면의 절대적인 좌표 시스템에서 요소의 위치 지정
+    tooltipElement.style.left = x + "px"; // 500px
+    tooltipElement.style.top = y + "px";
+
     tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;
   }
@@ -76,9 +89,13 @@ class ProjectItem {
     const projectElement = document.getElementById(this.id);
     const tooltipText = projectElement.dataset.extraInfo;
     projectElement.dataset.someInfo = "Test";
-    const tooltip = new Tooltip(() => {
-      this.hasActiveTooltip = false;
-    }, tooltipText);
+    const tooltip = new Tooltip(
+      () => {
+        this.hasActiveTooltip = false;
+      },
+      tooltipText,
+      this.id
+    );
     tooltip.attach();
     this.hasActiveTooltip = true;
   }
